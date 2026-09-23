@@ -581,7 +581,7 @@ if page == "Prestação de Contas Mensal":
         # RENDER PAGE 1
         
 
-        st.markdown(f"<h1 style='text-align: center; color: black; font-size: 38px; font-weight: bold; margin-bottom: 30px;'>Resumo do Mês: {month_mapping[selected_month]} | {selected_year}</h1>", unsafe_allow_html=True)
+        st.markdown(f"<h1 style='text-align: left; color: black; font-size: 38px; font-weight: bold; margin-bottom: 30px;'>Resumo do Mês: {month_mapping[selected_month]} | {selected_year}</h1>", unsafe_allow_html=True)
         
         balanco_color = "#27ae60" if balanco >= 0 else "#e74c3c"
         
@@ -597,21 +597,21 @@ if page == "Prestação de Contas Mensal":
         
         # PAGE 2
         st.markdown('<div class="pagebreak"></div>', unsafe_allow_html=True)
-        st.markdown("<h2 style='text-align: center; color: black; margin-top: 40px; font-size: 28px; font-weight: bold;'>Receitas: De Onde Veio o Dinheiro?</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: left; color: black; margin-top: 40px; font-size: 28px; font-weight: bold;'>Receitas: De Onde Veio o Dinheiro?</h2>", unsafe_allow_html=True)
         if not df_receitas.empty:
             st.plotly_chart(fig_rec_print, use_container_width=False)
             st.markdown(html_table, unsafe_allow_html=True)
             
         # PAGE 3
         st.markdown('<div class="pagebreak"></div>', unsafe_allow_html=True)
-        st.markdown("<h2 style='text-align: center; color: black; margin-top: 40px; font-size: 28px; font-weight: bold;'>Despesas: Para Onde Foi o Dinheiro?</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: left; color: black; margin-top: 40px; font-size: 28px; font-weight: bold;'>Despesas: Para Onde Foi o Dinheiro?</h2>", unsafe_allow_html=True)
         if not df_despesas.empty:
             st.plotly_chart(fig_desp_print, use_container_width=False)
             st.markdown(html_table_desp, unsafe_allow_html=True)
             
         # PAGE 4
         st.markdown('<div class="pagebreak"></div>', unsafe_allow_html=True)
-        st.markdown("<h2 style='text-align: center; color: black; margin-top: 10px; font-size: 22px; font-weight: bold;'>Glossário das Categorias Utilizadas</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: left; color: black; margin-top: 10px; font-size: 22px; font-weight: bold;'>Glossário das Categorias Utilizadas</h2>", unsafe_allow_html=True)
         if len(all_cats_period) > 0:
             gloss_html = "<div style='overflow-x:auto;'><table style='width:100%; border-collapse: collapse; text-align: left; font-family: sans-serif; color: black; font-size: 11px; line-height: 1.2;'>"
             gloss_html += "<thead><tr style='border-bottom: 2px solid #ddd;'><th style='padding: 4px;'>Tipo</th><th style='padding: 4px;'>Categoria</th><th style='padding: 4px;'>Descrição</th></tr></thead><tbody>"
