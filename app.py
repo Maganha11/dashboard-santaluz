@@ -426,6 +426,9 @@ if page == "Prestação de Contas Mensal":
 
     st.sidebar.markdown("Dashboard desenvolvido para a comunidade SantaLuz.")
 
+    APP_VERSION = "V1.029"
+    st.sidebar.markdown(f"<div style='text-align: center; color: #888; font-size: 16px; font-weight: bold; margin-top: 40px;'>{APP_VERSION}</div>", unsafe_allow_html=True)
+
     
 
     # Saldo Inicial Computado
@@ -886,6 +889,11 @@ elif page == "Fluxo de Caixa Gerencial":
     
     start_period = st.sidebar.selectbox("Mês/Ano Inicial", periods, key='sel_start')
     end_period = st.sidebar.selectbox("Mês/Ano Final", periods, key='sel_end')
+    
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("Dashboard desenvolvido para a comunidade SantaLuz.")
+    APP_VERSION = "V1.029"
+    st.sidebar.markdown(f"<div style='text-align: center; color: #888; font-size: 16px; font-weight: bold; margin-top: 40px;'>{APP_VERSION}</div>", unsafe_allow_html=True)
 
     
 
