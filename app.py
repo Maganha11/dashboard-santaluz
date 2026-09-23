@@ -136,71 +136,53 @@ def fetch_categories():
 
 def fetch_all_transactions():
 
+
     all_data = []
+    
+    # 1. Carregar histórico salvo (Até 30 de Junho de 2026) para otimizar velocidade
+    try:
+        import json
+        with open('historico_santaluz_ate_2026_06.json', 'r', encoding='utf-8') as f:
+            historico = json.load(f)
+            all_data.extend(historico)
+    except Exception as e:
+        st.warning(f"Aviso: Não foi possível carregar o histórico local. {e}")
 
+    # 2. Buscar apenas dados novos a partir de 1º de Julho de 2026
     page = 1
-
-    progress_text = "Atualizando dados da API. Isso pode levar um tempo para puxar desde 2024..."
-
+    progress_text = "Buscando dados recentes da API (A partir de Jul/2026)..."
     my_bar = st.progress(0, text=progress_text)
-
     
-
     total_pages = 1
-
     retries = 0
-
     
-
+    import time
     while page <= total_pages:
-
-        req = urllib.request.Request(f"{BASE_URL}transactions?per_page=100&page={page}", headers={
-
+        req = urllib.request.Request(f"{BASE_URL}transactions?per_page=100&page={page}&start_date=2026-07-01", headers={
             'Authorization': f'Bearer {TOKEN}',
-
             'Accept': 'application/json'
-
         })
-
         try:
-
             with urllib.request.urlopen(req) as response:
-
                 data = json.loads(response.read().decode())
-
                 all_data.extend(data.get('data', []))
-
                 
-
                 total_pages = data.get('page', {}).get('pages', 1)
-
                 
-
                 progress = min(page / total_pages, 1.0)
-
-                my_bar.progress(progress, text=f"Buscando página {page} de {total_pages} (Buscando desde 2024)...")
-
+                my_bar.progress(progress, text=f"Sincronizando pág {page}/{total_pages} (Dados recentes)...")
                 
-
                 page += 1
-
                 retries = 0
-
         except Exception as e:
-
             retries += 1
-
             if retries > 3:
-
-                st.error(f"Falha repetida na página {page}. Algumas transações podem faltar: {e}")
-
+                st.error(f"Falha na página {page}. Algumas transações podem faltar: {e}")
                 break
-
             time.sleep(2)
-
             
-
     my_bar.empty()
+
 
     
 
