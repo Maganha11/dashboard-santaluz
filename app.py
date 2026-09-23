@@ -67,7 +67,7 @@ st.markdown('''
     section[data-testid="stSidebar"] { display: none !important; }
     header { display: none !important; }
     .stApp { background-color: white !important; }
-    * { color: black !important; }
+    
     .pagebreak { page-break-before: always !important; display: block !important; width: 100% !important; height: 1px !important; margin: 0 !important; padding: 0 !important; border: none !important; }
     iframe { display: none !important; }
 }
@@ -323,8 +323,9 @@ st.sidebar.markdown("---")
 
 
 if page == "Prestação de Contas Mensal":
-    st.title("📊 Dashboard Financeiro SantaLuz")
-    st.markdown("Acompanhamento do fluxo financeiro e prestação de contas.")
+    if not st.session_state.get("print_mode", False):
+        st.title("📊 Dashboard Financeiro SantaLuz")
+        st.markdown("Acompanhamento do fluxo financeiro e prestação de contas.")
 
     st.sidebar.header("Filtros")
 
@@ -494,7 +495,7 @@ if page == "Prestação de Contas Mensal":
             [data-testid="stSidebar"] { display: none !important; }
             header { display: none !important; }
             .stApp { background-color: white !important; }
-            * { color: black !important; }
+            
         </style>""", unsafe_allow_html=True)
         
         col_voltar, col_print = st.columns([4, 1])
@@ -504,6 +505,18 @@ if page == "Prestação de Contas Mensal":
                 st.rerun()
         with col_print:
             st.components.v1.html("""<button onclick="try { window.parent.print(); } catch(e) { try { window.top.print(); } catch(e2) { alert('Bloqueio do navegador. Por favor, pressione as teclas Ctrl + P para imprimir!'); } }" style="float: right; background-color:#2ecc71; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold; font-size:16px;">🖨️ Imprimir Agora</button><script>setTimeout(function() { try { window.parent.print(); } catch(e) {} }, 1000);</script>""", height=70)
+
+        import base64
+        try:
+            with open("logo sta-luz.png", "rb") as f:
+                img_b64 = base64.b64encode(f.read()).decode()
+            img_html = f'<div style="text-align: center; margin-bottom: 10px;"><img src="data:image/png;base64,{img_b64}" width="200"></div>'
+            st.markdown(img_html, unsafe_allow_html=True)
+        except Exception as e:
+            pass
+
+        st.markdown("<h1 style='text-align: center; color: black; font-size: 40px; font-weight: bold; margin-bottom: 5px;'>📊 Dashboard Financeiro SantaLuz</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; color: #555; font-size: 18px; margin-bottom: 40px;'>Acompanhamento do fluxo financeiro e prestação de contas.</p>", unsafe_allow_html=True)
 
         import plotly.express as px
         import textwrap
@@ -564,14 +577,7 @@ if page == "Prestação de Contas Mensal":
             df_glossario_print = df_glossario_print.sort_values(by=['Tipo_Order', 'Categoria']).drop(columns=['Tipo_Order'])
 
         # RENDER PAGE 1
-        import base64
-        try:
-            with open("logo sta-luz.png", "rb") as f:
-                img_b64 = base64.b64encode(f.read()).decode()
-            img_html = f'<div style="text-align: center; margin-bottom: 20px;"><img src="data:image/png;base64,{img_b64}" width="200"></div>'
-            st.markdown(img_html, unsafe_allow_html=True)
-        except Exception as e:
-            pass
+        
 
         st.markdown(f"<h1 style='text-align: center; color: black; font-size: 50px; font-weight: bold; margin-bottom: 50px;'>Resumo do Mês: {month_mapping[selected_month]} | {selected_year}</h1>", unsafe_allow_html=True)
         
