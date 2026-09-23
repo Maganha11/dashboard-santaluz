@@ -518,8 +518,8 @@ if page == "Prestação de Contas Mensal":
             df_rec_grp_pie = df_rec_grp.rename(columns={'category_name': 'Categoria', 'amount': 'Valor'})
             df_rec_grp_pie['Categoria_Quebrada'] = df_rec_grp_pie['Categoria'].apply(lambda x: "<br>".join(textwrap.wrap(x, width=30)))
             fig_rec_print = px.pie(df_rec_grp_pie, values='Valor', names='Categoria_Quebrada', hole=0.4, color_discrete_sequence=px.colors.qualitative.Pastel, template="plotly_white")
-            fig_rec_print.update_traces(textposition='inside', textinfo='percent', domain=dict(x=[0, 1], y=[0.3, 1]))
-            fig_rec_print.update_layout(legend=dict(orientation="h", yanchor="top", y=0.2, xanchor="center", x=0.5), margin=dict(t=20, b=0, l=0, r=0), height=500)
+            fig_rec_print.update_traces(textposition='inside', textinfo='percent', domain=dict(x=[0, 0.6], y=[0, 1]))
+            fig_rec_print.update_layout(legend=dict(orientation='v', yanchor='top', y=1, xanchor='left', x=0.65, font=dict(size=14)), margin=dict(t=20, b=20, l=0, r=0), height=450)
             
             html_table += "<div style='overflow-x:auto;'><table style='width:100%; border-collapse: collapse; text-align: left; font-family: sans-serif; color: black;'>"
             html_table += "<thead><tr style='border-bottom: 2px solid #ddd;'><th>Categoria</th><th>Porcentagem</th><th>Valor</th></tr></thead><tbody>"
@@ -540,8 +540,8 @@ if page == "Prestação de Contas Mensal":
             df_desp_grp_pie = df_desp_grp.rename(columns={'category_name': 'Categoria', 'amount': 'Valor'})
             df_desp_grp_pie['Categoria_Quebrada'] = df_desp_grp_pie['Categoria'].apply(lambda x: "<br>".join(textwrap.wrap(x, width=30)))
             fig_desp_print = px.pie(df_desp_grp_pie, values='Valor', names='Categoria_Quebrada', hole=0.4, color_discrete_sequence=px.colors.qualitative.Pastel, template="plotly_white")
-            fig_desp_print.update_traces(textposition='inside', textinfo='percent', domain=dict(x=[0, 1], y=[0.3, 1]))
-            fig_desp_print.update_layout(legend=dict(orientation="h", yanchor="top", y=0.2, xanchor="center", x=0.5), margin=dict(t=20, b=0, l=0, r=0), height=500)
+            fig_desp_print.update_traces(textposition='inside', textinfo='percent', domain=dict(x=[0, 0.6], y=[0, 1]))
+            fig_desp_print.update_layout(legend=dict(orientation='v', yanchor='top', y=1, xanchor='left', x=0.65, font=dict(size=14)), margin=dict(t=20, b=20, l=0, r=0), height=450)
             
             html_table_desp += "<div style='overflow-x:auto;'><table style='width:100%; border-collapse: collapse; text-align: left; font-family: sans-serif; color: black;'>"
             html_table_desp += "<thead><tr style='border-bottom: 2px solid #ddd;'><th>Categoria</th><th>Porcentagem</th><th>Valor</th></tr></thead><tbody>"
