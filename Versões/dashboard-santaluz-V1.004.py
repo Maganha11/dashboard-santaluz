@@ -246,6 +246,12 @@ def fetch_all_transactions():
 
 
 
+st.title("📊 Dashboard Financeiro SantaLuz")
+
+st.markdown("Acompanhamento do fluxo financeiro e prestação de contas.")
+
+
+
 with st.spinner("Carregando dados completos da API..."):
 
     categories_map = fetch_categories()
@@ -288,8 +294,6 @@ st.sidebar.markdown("---")
 
 
 if page == "Prestação de Contas Mensal":
-    st.title("📊 Dashboard Financeiro SantaLuz")
-    st.markdown("Acompanhamento do fluxo financeiro e prestação de contas.")
 
     st.sidebar.header("Filtros")
 
@@ -1015,10 +1019,10 @@ elif page == "Fluxo de Caixa Gerencial":
             return html
             
         html_table = "<div style='overflow-x:auto;'><table style='width:100%; border-collapse: collapse; text-align: left; font-size: 14px;'>"
-        html_table += "<thead><tr style='border-bottom: 2px solid #aaa;'><th style='padding: 8px; position: sticky; top: 0; background-color: #0e1117; z-index: 2;'>Categoria</th>"
+        html_table += "<tr style='border-bottom: 2px solid #aaa;'><th style='padding: 8px;'>Categoria</th>"
         for col in ordered_cols:
-            html_table += f"<th style='padding: 8px; position: sticky; top: 0; background-color: #0e1117; z-index: 2;'>{col}</th>"
-        html_table += "</tr></thead><tbody>"
+            html_table += f"<th style='padding: 8px;'>{col}</th>"
+        html_table += "</tr>"
         
         html_table += build_row("RECEITAS (TOTAL)", total_rec, "REC", is_bold=True)
         for cat in sorted(df_rec_pivot.index):
@@ -1036,7 +1040,7 @@ elif page == "Fluxo de Caixa Gerencial":
         html_table += "<tr style='border-top: 2px solid #aaa;'></tr>"
         saldo_series = df_grp.set_index('Mês Formatado')['Saldo Acumulado']
         html_table += build_row("SALDO ACUMULADO", saldo_series, "SAL", is_bold=True)
-        html_table += "</tbody></table></div>"
+        html_table += "</table></div>"
 
         
 

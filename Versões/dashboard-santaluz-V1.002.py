@@ -246,6 +246,12 @@ def fetch_all_transactions():
 
 
 
+st.title("📊 Dashboard Financeiro SantaLuz")
+
+st.markdown("Acompanhamento do fluxo financeiro e prestação de contas.")
+
+
+
 with st.spinner("Carregando dados completos da API..."):
 
     categories_map = fetch_categories()
@@ -288,8 +294,6 @@ st.sidebar.markdown("---")
 
 
 if page == "Prestação de Contas Mensal":
-    st.title("📊 Dashboard Financeiro SantaLuz")
-    st.markdown("Acompanhamento do fluxo financeiro e prestação de contas.")
 
     st.sidebar.header("Filtros")
 
@@ -520,13 +524,13 @@ if page == "Prestação de Contas Mensal":
             df_rec_table = df_receitas.groupby('category_name').agg(Quantidade=('id', 'count'), Valor=('amount', 'sum')).reset_index()
             df_rec_table = df_rec_table.sort_values(by='Valor', ascending=False)
             html_t = "<div style='overflow-x:auto;'><table style='width:100%; border-collapse: collapse; text-align: left; font-size: 14px;'>"
-            html_t += "<tr style='border-bottom: 2px solid #aaa;'><th style='padding: 8px;'>Categoria</th><th style='padding: 8px; text-align:right;'>Porcentagem</th><th style='padding: 8px; width: 100px;'>Valor</th></tr>"
+            html_t += "<tr style='border-bottom: 2px solid #aaa;'><th style='padding: 8px;'>Categoria</th><th style='padding: 8px; text-align:right;'>Porcentagem</th><th style='padding: 8px; text-align:right;'>Quantidade</th><th style='padding: 8px; width: 150px;'>Valor</th></tr>"
             for _, row in df_rec_table.iterrows():
                 pct = f"{(row['Valor'] / total_receitas * 100):.2f}%"
                 val_str = f"{row['Valor']:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-                html_t += f"<tr style='border-bottom: 1px solid #ddd;'><td style='padding: 8px;'>{row['category_name']}</td><td style='padding: 8px; text-align:right;'>{pct}</td><td style='padding: 8px;'><div style='display: flex; justify-content: space-between; width: 85px; margin-left: auto;'><span>R$</span><span style='white-space: nowrap;'>{val_str}</span></div></td></tr>"
+                html_t += f"<tr style='border-bottom: 1px solid #ddd;'><td style='padding: 8px;'>{row['category_name']}</td><td style='padding: 8px; text-align:right;'>{pct}</td><td style='padding: 8px; text-align:right;'>{row['Quantidade']}</td><td style='padding: 8px;'><div style='display: flex; justify-content: space-between; width: 115px; margin-left: auto;'><span>R$</span><span style='white-space: nowrap;'>{val_str}</span></div></td></tr>"
             total_val_str = f"{total_receitas:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-            html_t += f"<tr style='font-weight: bold; color: #27ae60; border-top: 2px solid #aaa;'><td style='padding: 8px;'>TOTAL RECEITAS</td><td style='padding: 8px; text-align:right;'>100.00%</td><td style='padding: 8px;'><div style='display: flex; justify-content: space-between; width: 85px; margin-left: auto;'><span>R$</span><span style='white-space: nowrap;'>{total_val_str}</span></div></td></tr>"
+            html_t += f"<tr style='font-weight: bold; color: #27ae60; border-top: 2px solid #aaa;'><td style='padding: 8px;'>TOTAL RECEITAS</td><td style='padding: 8px; text-align:right;'>100.00%</td><td style='padding: 8px; text-align:right;'>{len(df_receitas)}</td><td style='padding: 8px;'><div style='display: flex; justify-content: space-between; width: 115px; margin-left: auto;'><span>R$</span><span style='white-space: nowrap;'>{total_val_str}</span></div></td></tr>"
             html_t += "</table></div>"
             st.markdown(html_t, unsafe_allow_html=True)
 
@@ -579,13 +583,13 @@ if page == "Prestação de Contas Mensal":
             df_desp_table = df_despesas.groupby('category_name').agg(Quantidade=('id', 'count'), Valor=('amount', 'sum')).reset_index()
             df_desp_table = df_desp_table.sort_values(by='Valor', ascending=False)
             html_t = "<div style='overflow-x:auto;'><table style='width:100%; border-collapse: collapse; text-align: left; font-size: 14px;'>"
-            html_t += "<tr style='border-bottom: 2px solid #aaa;'><th style='padding: 8px;'>Categoria</th><th style='padding: 8px; text-align:right;'>Porcentagem</th><th style='padding: 8px; width: 100px;'>Valor</th></tr>"
+            html_t += "<tr style='border-bottom: 2px solid #aaa;'><th style='padding: 8px;'>Categoria</th><th style='padding: 8px; text-align:right;'>Porcentagem</th><th style='padding: 8px; text-align:right;'>Quantidade</th><th style='padding: 8px; width: 150px;'>Valor</th></tr>"
             for _, row in df_desp_table.iterrows():
                 pct = f"{(row['Valor'] / total_despesas * 100):.2f}%"
                 val_str = f"{row['Valor']:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-                html_t += f"<tr style='border-bottom: 1px solid #ddd;'><td style='padding: 8px;'>{row['category_name']}</td><td style='padding: 8px; text-align:right;'>{pct}</td><td style='padding: 8px;'><div style='display: flex; justify-content: space-between; width: 85px; margin-left: auto;'><span>R$</span><span style='white-space: nowrap;'>{val_str}</span></div></td></tr>"
+                html_t += f"<tr style='border-bottom: 1px solid #ddd;'><td style='padding: 8px;'>{row['category_name']}</td><td style='padding: 8px; text-align:right;'>{pct}</td><td style='padding: 8px; text-align:right;'>{row['Quantidade']}</td><td style='padding: 8px;'><div style='display: flex; justify-content: space-between; width: 115px; margin-left: auto;'><span>R$</span><span style='white-space: nowrap;'>{val_str}</span></div></td></tr>"
             total_val_str = f"{total_despesas:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-            html_t += f"<tr style='font-weight: bold; color: #c0392b; border-top: 2px solid #aaa;'><td style='padding: 8px;'>TOTAL DESPESAS</td><td style='padding: 8px; text-align:right;'>100.00%</td><td style='padding: 8px;'><div style='display: flex; justify-content: space-between; width: 85px; margin-left: auto;'><span>R$</span><span style='white-space: nowrap;'>{total_val_str}</span></div></td></tr>"
+            html_t += f"<tr style='font-weight: bold; color: #c0392b; border-top: 2px solid #aaa;'><td style='padding: 8px;'>TOTAL DESPESAS</td><td style='padding: 8px; text-align:right;'>100.00%</td><td style='padding: 8px; text-align:right;'>{len(df_despesas)}</td><td style='padding: 8px;'><div style='display: flex; justify-content: space-between; width: 115px; margin-left: auto;'><span>R$</span><span style='white-space: nowrap;'>{total_val_str}</span></div></td></tr>"
             html_t += "</table></div>"
             st.markdown(html_t, unsafe_allow_html=True)
 
@@ -745,52 +749,11 @@ elif page == "Fluxo de Caixa Gerencial":
 
         
 
-        st.sidebar.header("Filtros do Fluxo")
-    
-    if 'sel_start' not in st.session_state:
-        st.session_state.sel_start = default_start
-    if 'sel_end' not in st.session_state:
-        st.session_state.sel_end = default_end
-        
-    st.sidebar.markdown("**Filtros Rápidos**")
-    col1, col2 = st.sidebar.columns(2)
-    col3, col4 = st.sidebar.columns(2)
-    
-    def set_quick_filter(months_back):
-        today = datetime.today()
-        if today.month == 1:
-            end_m, end_y = 12, today.year - 1
-        else:
-            end_m, end_y = today.month - 1, today.year
-            
-        end_q = f"{end_y}-{end_m:02d}"
-        
-        if months_back is None:
-            start_q = periods[0]
-            end_q = periods[-1]
-        else:
-            total_months = end_y * 12 + end_m - 1
-            start_total_months = total_months - (months_back - 1)
-            start_y = start_total_months // 12
-            start_m = start_total_months % 12 + 1
-            start_q = f"{start_y}-{start_m:02d}"
-            
-        valid_starts = [p for p in periods if p >= start_q]
-        st.session_state.sel_start = valid_starts[0] if valid_starts else periods[0]
-        
-        valid_ends = [p for p in periods if p <= end_q]
-        st.session_state.sel_end = valid_ends[-1] if valid_ends else periods[-1]
+    st.sidebar.header("Filtros do Fluxo")
 
-    if col1.button("3 meses", use_container_width=True): set_quick_filter(3)
-    if col2.button("6 meses", use_container_width=True): set_quick_filter(6)
-    if col3.button("1 ano", use_container_width=True): set_quick_filter(12)
-    if col4.button("2 anos", use_container_width=True): set_quick_filter(24)
-    if st.sidebar.button("Desde o início", use_container_width=True): set_quick_filter(None)
-    
-    st.sidebar.markdown("---")
-    
-    start_period = st.sidebar.selectbox("Mês/Ano Inicial", periods, key='sel_start')
-    end_period = st.sidebar.selectbox("Mês/Ano Final", periods, key='sel_end')
+    start_period = st.sidebar.selectbox("Mês/Ano Inicial", periods, index=periods.index(default_start))
+
+    end_period = st.sidebar.selectbox("Mês/Ano Final", periods, index=periods.index(default_end))
 
     
 
@@ -998,7 +961,7 @@ elif page == "Fluxo de Caixa Gerencial":
                 elif val < prev_val: indicator = " <span style='color:#c0392b; font-weight:bold;'>↓</span>"
                 else: indicator = " <span style='color:gray; font-weight:bold;'>-</span>"
             val_str = f"{val:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-            return f"<div style='display: flex; justify-content: space-between; width: 85px; margin-left: auto; {color_style}'><span>R$</span><span style='white-space: nowrap; text-align: right;'>{val_str}{indicator}</span></div>"
+            return f"<div style='display: flex; justify-content: space-between; width: 115px; margin-left: auto; {color_style}'><span>R$</span><span style='white-space: nowrap; text-align: right;'>{val_str}{indicator}</span></div>"
             
         def build_row(cat_name, row_series, row_type, is_bold=False, indent=0):
             html = f"<tr style='border-bottom: 1px solid #ddd;'>"
@@ -1015,10 +978,10 @@ elif page == "Fluxo de Caixa Gerencial":
             return html
             
         html_table = "<div style='overflow-x:auto;'><table style='width:100%; border-collapse: collapse; text-align: left; font-size: 14px;'>"
-        html_table += "<thead><tr style='border-bottom: 2px solid #aaa;'><th style='padding: 8px; position: sticky; top: 0; background-color: #0e1117; z-index: 2;'>Categoria</th>"
+        html_table += "<tr style='border-bottom: 2px solid #aaa;'><th style='padding: 8px;'>Categoria</th>"
         for col in ordered_cols:
-            html_table += f"<th style='padding: 8px; position: sticky; top: 0; background-color: #0e1117; z-index: 2;'>{col}</th>"
-        html_table += "</tr></thead><tbody>"
+            html_table += f"<th style='padding: 8px;'>{col}</th>"
+        html_table += "</tr>"
         
         html_table += build_row("RECEITAS (TOTAL)", total_rec, "REC", is_bold=True)
         for cat in sorted(df_rec_pivot.index):
@@ -1036,7 +999,7 @@ elif page == "Fluxo de Caixa Gerencial":
         html_table += "<tr style='border-top: 2px solid #aaa;'></tr>"
         saldo_series = df_grp.set_index('Mês Formatado')['Saldo Acumulado']
         html_table += build_row("SALDO ACUMULADO", saldo_series, "SAL", is_bold=True)
-        html_table += "</tbody></table></div>"
+        html_table += "</table></div>"
 
         
 

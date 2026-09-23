@@ -1015,9 +1015,9 @@ elif page == "Fluxo de Caixa Gerencial":
             return html
             
         html_table = "<div style='overflow-x:auto;'><table style='width:100%; border-collapse: collapse; text-align: left; font-size: 14px;'>"
-        html_table += "<thead><tr style='border-bottom: 2px solid #aaa;'><th style='padding: 8px; position: sticky; top: 0; background-color: #0e1117; z-index: 2;'>Categoria</th>"
+        html_table += "<thead><tr style='border-bottom: 2px solid #aaa;'><th style='padding: 8px; position: sticky; top: 0; background-color: var(--background-color); z-index: 2;'>Categoria</th>"
         for col in ordered_cols:
-            html_table += f"<th style='padding: 8px; position: sticky; top: 0; background-color: #0e1117; z-index: 2;'>{col}</th>"
+            html_table += f"<th style='padding: 8px; position: sticky; top: 0; background-color: var(--background-color); z-index: 2;'>{col}</th>"
         html_table += "</tr></thead><tbody>"
         
         html_table += build_row("RECEITAS (TOTAL)", total_rec, "REC", is_bold=True)
