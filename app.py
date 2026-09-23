@@ -488,6 +488,115 @@ if page == "Prestação de Contas Mensal":
 
     
 
+
+    if st.session_state.get('print_mode', False):
+        st.markdown("""<style>
+            [data-testid="stSidebar"] { display: none !important; }
+            header { display: none !important; }
+            .stApp { background-color: white !important; }
+            * { color: black !important; }
+        </style>""", unsafe_allow_html=True)
+        
+        col_voltar, col_print = st.columns([4, 1])
+        with col_voltar:
+            if st.button("⬅️ Voltar para o Dashboard"):
+                st.session_state['print_mode'] = False
+                st.rerun()
+        with col_print:
+            st.components.v1.html("""<button onclick="try { window.parent.print(); } catch(e) { try { window.top.print(); } catch(e2) { alert('Bloqueio do navegador. Por favor, pressione as teclas Ctrl + P para imprimir!'); } }" style="float: right; background-color:#2ecc71; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold; font-size:16px;">🖨️ Imprimir Agora</button><script>setTimeout(function() { try { window.parent.print(); } catch(e) {} }, 1000);</script>""", height=70)
+
+        import plotly.express as px
+        import textwrap
+        import pandas as pd
+        
+        # Receitas calc
+        html_table = ""
+        if not df_receitas.empty:
+            df_rec_grp = df_receitas.groupby('category_name')['amount'].sum().reset_index()
+            df_rec_grp['percent'] = (df_rec_grp['amount'] / total_receitas) * 100
+            df_rec_grp = df_rec_grp.sort_values(by='amount', ascending=False)
+            df_rec_grp_pie = df_rec_grp.rename(columns={'category_name': 'Categoria', 'amount': 'Valor'})
+            df_rec_grp_pie['Categoria_Quebrada'] = df_rec_grp_pie['Categoria'].apply(lambda x: "<br>".join(textwrap.wrap(x, width=30)))
+            fig_rec_print = px.pie(df_rec_grp_pie, values='Valor', names='Categoria_Quebrada', hole=0.4, color_discrete_sequence=px.colors.qualitative.Pastel, template="plotly_white")
+            fig_rec_print.update_traces(textposition='inside', textinfo='percent', domain=dict(x=[0, 1], y=[0.3, 1]))
+            fig_rec_print.update_layout(legend=dict(orientation="h", yanchor="top", y=0.2, xanchor="center", x=0.5), margin=dict(t=20, b=0, l=0, r=0), height=500)
+            
+            html_table += "<div style='overflow-x:auto;'><table style='width:100%; border-collapse: collapse; text-align: left; font-family: sans-serif; color: black;'>"
+            html_table += "<thead><tr style='border-bottom: 2px solid #ddd;'><th>Categoria</th><th>Porcentagem</th><th>Valor</th></tr></thead><tbody>"
+            for _, row in df_rec_grp.iterrows():
+                val_str = f"R$ {row['amount']:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+                html_table += f"<tr style='border-bottom: 1px solid #ddd;'><td>{row['category_name']}</td><td>{row['percent']:.2f}%</td><td style='white-space: nowrap;'>{val_str}</td></tr>"
+            html_table += f"<tr style='font-weight: bold; border-top: 2px solid #333;'><td>TOTAL RECEITAS</td><td>100.00%</td><td style='white-space: nowrap;'>R$ {total_receitas:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") + "</td></tr>"
+            html_table += "</tbody></table></div>"
+            
+        # Despesas calc
+        html_table_desp = ""
+        if not df_despesas.empty:
+            df_desp_grp = df_despesas.groupby('category_name')['amount'].sum().reset_index()
+            df_desp_grp['amount'] = df_desp_grp['amount'].abs()
+            total_desp_abs = df_desp_grp['amount'].sum()
+            df_desp_grp['percent'] = (df_desp_grp['amount'] / total_desp_abs) * 100
+            df_desp_grp = df_desp_grp.sort_values(by='amount', ascending=False)
+            df_desp_grp_pie = df_desp_grp.rename(columns={'category_name': 'Categoria', 'amount': 'Valor'})
+            df_desp_grp_pie['Categoria_Quebrada'] = df_desp_grp_pie['Categoria'].apply(lambda x: "<br>".join(textwrap.wrap(x, width=30)))
+            fig_desp_print = px.pie(df_desp_grp_pie, values='Valor', names='Categoria_Quebrada', hole=0.4, color_discrete_sequence=px.colors.qualitative.Pastel, template="plotly_white")
+            fig_desp_print.update_traces(textposition='inside', textinfo='percent', domain=dict(x=[0, 1], y=[0.3, 1]))
+            fig_desp_print.update_layout(legend=dict(orientation="h", yanchor="top", y=0.2, xanchor="center", x=0.5), margin=dict(t=20, b=0, l=0, r=0), height=500)
+            
+            html_table_desp += "<div style='overflow-x:auto;'><table style='width:100%; border-collapse: collapse; text-align: left; font-family: sans-serif; color: black;'>"
+            html_table_desp += "<thead><tr style='border-bottom: 2px solid #ddd;'><th>Categoria</th><th>Porcentagem</th><th>Valor</th></tr></thead><tbody>"
+            for _, row in df_desp_grp.iterrows():
+                val_str = f"R$ {row['amount']:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+                html_table_desp += f"<tr style='border-bottom: 1px solid #ddd;'><td>{row['category_name']}</td><td>{row['percent']:.2f}%</td><td style='white-space: nowrap;'>{val_str}</td></tr>"
+            html_table_desp += f"<tr style='font-weight: bold; border-top: 2px solid #333;'><td>TOTAL DESPESAS</td><td>100.00%</td><td style='white-space: nowrap;'>R$ {total_desp_abs:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") + "</td></tr>"
+            html_table_desp += "</tbody></table></div>"
+
+        # Glossario calc
+        all_cats_period = df_period['category_name'].unique()
+        if len(all_cats_period) > 0:
+            glossario_data = []
+            for cat in all_cats_period:
+                info = GLOSSARIO_INFO.get(cat, {"Tipo": "-", "Descrição": "-"})
+                glossario_data.append({"Tipo": info["Tipo"], "Categoria": cat, "Descrição": info.get("Descrição", "-")})
+            df_glossario_print = pd.DataFrame(glossario_data)
+            tipo_order = {"Recebimentos": 1, "Despesas fixas": 2, "Despesas variáveis": 3}
+            df_glossario_print['Tipo_Order'] = df_glossario_print['Tipo'].map(tipo_order).fillna(4)
+            df_glossario_print = df_glossario_print.sort_values(by=['Tipo_Order', 'Categoria']).drop(columns=['Tipo_Order'])
+
+        # RENDER PAGE 1
+        st.markdown(f"<h1 style='text-align: center; color: black; font-size: 36px; margin-bottom: 40px;'>Resumo do Mês: {month_mapping[selected_month]} | {selected_year}</h1>", unsafe_allow_html=True)
+        st.markdown(f"""
+        <div style="font-size: 24px; line-height: 2.5; color: black; padding: 20px;">
+            <div style="border-bottom: 1px solid #eee;"><b>Saldo Anterior:</b> <span style="float: right;">R$ {saldo_anterior:,.2f}</span></div>
+            <div style="border-bottom: 1px solid #eee;"><b>Total Recebimentos:</b> <span style="float: right; color: #27ae60;">R$ {total_receitas:,.2f} <span style="font-size: 16px; color: #555;">({len(df_receitas)} transações)</span></span></div>
+            <div style="border-bottom: 1px solid #eee;"><b>Total Despesas:</b> <span style="float: right; color: #e74c3c;">R$ {-total_despesas:,.2f} <span style="font-size: 16px; color: #555;">({len(df_despesas)} transações)</span></span></div>
+            <div style="border-bottom: 1px solid #eee;"><b>Balanço no Período:</b> <span style="float: right;">R$ {balanco:,.2f}</span></div>
+            <div style="border-bottom: 1px solid #eee; font-size: 28px;"><b>Saldo Final:</b> <span style="float: right; font-weight: bold;">R$ {saldo_final:,.2f}</span></div>
+        </div>
+        """.replace(",", "X").replace(".", ",").replace("X", "."), unsafe_allow_html=True)
+        
+        # PAGE 2
+        st.markdown('<div class="pagebreak"></div>', unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center; color: black; margin-top: 40px;'>Receitas: De Onde Veio o Dinheiro?</h2>", unsafe_allow_html=True)
+        if not df_receitas.empty:
+            st.plotly_chart(fig_rec_print, use_container_width=True)
+            st.markdown(html_table, unsafe_allow_html=True)
+            
+        # PAGE 3
+        st.markdown('<div class="pagebreak"></div>', unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center; color: black; margin-top: 40px;'>Despesas: Para Onde Foi o Dinheiro?</h2>", unsafe_allow_html=True)
+        if not df_despesas.empty:
+            st.plotly_chart(fig_desp_print, use_container_width=True)
+            st.markdown(html_table_desp, unsafe_allow_html=True)
+            
+        # PAGE 4
+        st.markdown('<div class="pagebreak"></div>', unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center; color: black; margin-top: 40px;'>Glossário das Categorias Utilizadas</h2>", unsafe_allow_html=True)
+        if len(all_cats_period) > 0:
+            st.table(df_glossario_print.set_index('Tipo'))
+        
+        st.stop()
+
     st.header(f"Resumo do Mês: {month_mapping[selected_month]} | {selected_year}")
     
     
