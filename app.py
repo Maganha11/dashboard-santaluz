@@ -19,6 +19,43 @@ TOKEN = st.secrets["PROCFY_TOKEN"]
 
 BASE_URL = "https://api.procfy.io/api/v1/"
 
+GLOSSARIO_INFO = {
+    "CONTRIBUIÇÃO - CERIMÔNIAS": {"Tipo": "Recebimentos", "Descrição": "Entradas referentes às contribuições de cerimônias."},
+    "MENSALIDADE - MANTENEDORES": {"Tipo": "Recebimentos", "Descrição": "Entradas referentes às mensalidades dos Mantenedores."},
+    "CONTRIBUIÇÃO - EVENTOS": {"Tipo": "Recebimentos", "Descrição": "Entradas referentes às contribuições de eventos como festas, saraus, dentre outros."},
+    "DOAÇÕES RECEBIDAS": {"Tipo": "Recebimentos", "Descrição": "Entradas referentes às doações recebidas."},
+    "RATEIO - ALIMENTAÇÃO": {"Tipo": "Recebimentos", "Descrição": "Entradas referentes aos rateios de refeições. A SantaLuz efetuou o pagamento inicial e, posteriormente, recebeu a parte devida por cada um dos demais participantes."},
+    "REPASSE DE MEDICINAS": {"Tipo": "Recebimentos", "Descrição": "Entradas referentes ao repasse de medicinas do estoque da Santaluz para outros centros.."},
+    "RENDIMENTOS FINANCEIROS": {"Tipo": "Recebimentos", "Descrição": "Entradas referente a rendimentos de aplicações financeiras CDB."},
+    "CONTRIBUIÇÃO - RETIROS": {"Tipo": "Recebimentos", "Descrição": "Entradas referentes às contribuições de retiros."},
+    "RIFAS": {"Tipo": "Recebimentos", "Descrição": "Entradas referente às arrecadações realizadas por meio de rifas."},
+    "ASSINATURA DE SERVIÇOS DIGITAIS": {"Tipo": "Despesas fixas", "Descrição": "Despesas com a assinatura de serviços digitais, como sistemas de gestão financeira."},
+    "CONTABILIDADE": {"Tipo": "Despesas fixas", "Descrição": "Despesas com escritório de contabilidade."},
+    "CONTRIBUIÇÃO PARA USO DO ESPAÇO E RECURSOS": {"Tipo": "Despesas fixas", "Descrição": "Essa despesa cobre o uso do espaço e outras comodidades, como internet, água e energia, além de uma contribuição para os gastos com os animais. O valor é repassado ao dirigente, proprietário do chacará onde a SantaLuz está localizada.."},
+    "CUSTEIO DE VIAGEM": {"Tipo": "Despesas variáveis", "Descrição": "Ajuda de custos de viagens para transporte de artistas em apresentações na Santaluz, ou para a condução de cerimônias da SantaLuz em outros locais."},
+    "APRESENTAÇÃO ARTÍSTICA": {"Tipo": "Despesas variáveis", "Descrição": "Custos associados a apresentações artísticas, incluindo a contratação de músicos para eventos comemorativos."},
+    "REPASSE DE CERIMÔNIA DE TERCEIROS": {"Tipo": "Despesas variáveis", "Descrição": "Despesas relacionadas ao repasse de contribuições de cerimônias realizadas na Santaluz por coletivos externos, como indígenas, que serão destinadas a esses grupos.."},
+    "AYAHUASCA": {"Tipo": "Despesas variáveis", "Descrição": "Despesa com a aquisição de medicina ayahuasca, o principal insumo para a realização das cerimônias na SantaLuz."},
+    "DESPESAS COM RETIRO": {"Tipo": "Despesas variáveis", "Descrição": "Despesas relacionadas diretamente a organização e realização de retiros."},
+    "DEVOLUÇÕES (DESISTÊNCIA)": {"Tipo": "Despesas variáveis", "Descrição": "Despesa referente à restituição de contribuições de cerimônias, aplicável quando um frequentador, após contribuir, informa antecipadamente sua impossibilidade de comparecimento."},
+    "MANUTENÇÃO DE EQUIPAMENTOS": {"Tipo": "Despesas variáveis", "Descrição": "Despesas relacionadas à manutenção dos equipamentos da SantaLuz."},
+    "MANUTENÇÃO DAS INSTALAÇÕES": {"Tipo": "Despesas variáveis", "Descrição": "Despesas relacionadas à manutenção das instalações da SantaLuz."},
+    "LENHAS": {"Tipo": "Despesas variáveis", "Descrição": "Despesas relacionadas à aquisição de lenhas para a fogueira."},
+    "MATERIAIS DE LIMPEZA": {"Tipo": "Despesas variáveis", "Descrição": "Despesas com materiais de limpeza."},
+    "TARIFAS BANCÁRIAS": {"Tipo": "Despesas variáveis", "Descrição": "Despesas com tarifas bancárias e notificações de cobranças."},
+    "INSTALAÇÕES": {"Tipo": "Despesas variáveis", "Descrição": "Investimentos realizados na melhoria das instalações."},
+    "EQUIPAMENTOS , FERRAMENTAS E UTENSÍLIOS": {"Tipo": "Despesas variáveis", "Descrição": "Custos associados à compra de novos equipamentos, ferramentas e utensílios."},
+    "DEMAIS DESPESAS": {"Tipo": "Despesas variáveis", "Descrição": "Outras despesas esporádicas e de baixo valor."},
+    "RAPÉ / TABACO": {"Tipo": "Despesas variáveis", "Descrição": "Despesas com medicina do Rapé e Tabaco."},
+    "VELAS": {"Tipo": "Despesas variáveis", "Descrição": "Despesas com Velas."},
+    "ALIMENTOS E REFEIÇÕES": {"Tipo": "Despesas variáveis", "Descrição": "Despesas com alimentos e refeições referem-se à contrapartida mencionada na categoria de receitas \"Rateio de alimentação\". Neste processo, a SantaLuz efetua o pagamento e, posteriormente, recebe dos frequentadores o valor correspondente à parte devida por cada um."},
+        "ANIMAIS": {"Tipo": "Despesas variáveis", "Descrição": "Custos com ração, vacinas, medicamentos e assistência veterinária. Conta descontinuada em setembro/2024, sendo unificada na categoria CONTRIBUIÇÃO PARA USO DO ESPAÇO E RECURSOS."},
+    "ENERGIA ELÉTRICA": {"Tipo": "Despesas fixas", "Descrição": "Fornecimento e consumo de energia elétrica predial. Conta descontinuada em setembro/2024, sendo unificada na categoria CONTRIBUIÇÃO PARA USO DO ESPAÇO E RECURSOS."},
+    "INTERNET": {"Tipo": "Despesas fixas", "Descrição": "Assinatura de serviços de conectividade e banda larga. Conta descontinuada em setembro/2024, sendo unificada na categoria CONTRIBUIÇÃO PARA USO DO ESPAÇO E RECURSOS."},
+    "CHECKLIST": {"Tipo": "Despesas variáveis", "Descrição": "Esta categoria de despesa abrange um checklist de itens adquiridos regularmente para a realização das cerimônias, como saquinhos, papel higiênico,, ervas para tabaco e defumação, incensos, entre outros."}
+}
+
+
 SALDO_INICIAL_2023 = 10774.37
 
 
@@ -30,11 +67,9 @@ st.markdown('''
     section[data-testid="stSidebar"] { display: none !important; }
     header { display: none !important; }
     .stApp { background-color: white !important; }
-    .block-container { max-width: 100% !important; padding: 10mm !important; }
     * { color: black !important; }
-    .stPlotlyChart { page-break-inside: avoid; }
-    table { page-break-inside: avoid; color: black !important; }
-    th, td { color: black !important; }
+    .pagebreak { page-break-before: always !important; display: block !important; width: 100% !important; height: 1px !important; margin: 0 !important; padding: 0 !important; border: none !important; }
+    iframe { display: none !important; }
 }
 </style>
 ''', unsafe_allow_html=True)
@@ -454,6 +489,9 @@ if page == "Prestação de Contas Mensal":
     
 
     st.header(f"Resumo do Mês: {month_mapping[selected_month]} | {selected_year}")
+    
+    
+
 
     
 
@@ -494,7 +532,7 @@ if page == "Prestação de Contas Mensal":
     
 
     with colA:
-
+        st.markdown('<div class="pagebreak"></div>', unsafe_allow_html=True)
         st.subheader("Receitas: De Onde Veio o Dinheiro?")
 
         if not df_receitas.empty:
@@ -537,7 +575,7 @@ if page == "Prestação de Contas Mensal":
     
 
     with colB:
-
+        st.markdown('<div class="pagebreak"></div>', unsafe_allow_html=True)
         st.subheader("Despesas: Para Onde Foi o Dinheiro?")
 
         if not df_despesas.empty:
@@ -601,69 +639,7 @@ if page == "Prestação de Contas Mensal":
 
     
 
-    GLOSSARIO_INFO = {
-
-        "CONTRIBUIÇÃO - CERIMÔNIAS": {"Tipo": "Recebimentos", "Descrição": "Entradas referentes às contribuições de cerimônias."},
-
-        "MENSALIDADE - MANTENEDORES": {"Tipo": "Recebimentos", "Descrição": "Entradas referentes às mensalidades dos Mantenedores."},
-
-        "CONTRIBUIÇÃO - EVENTOS": {"Tipo": "Recebimentos", "Descrição": "Entradas referentes às contribuições de eventos como festas, saraus, dentre outros."},
-
-        "DOAÇÕES RECEBIDAS": {"Tipo": "Recebimentos", "Descrição": "Entradas referentes às doações recebidas."},
-
-        "RATEIO - ALIMENTAÇÃO": {"Tipo": "Recebimentos", "Descrição": "Entradas referentes aos rateios de refeições. A SantaLuz efetuou o pagamento inicial e, posteriormente, recebeu a parte devida por cada um dos demais participantes."},
-
-        "REPASSE DE MEDICINAS": {"Tipo": "Recebimentos", "Descrição": "Entradas referentes ao repasse de medicinas do estoque da Santaluz para outros centros.."},
-
-        "RENDIMENTOS FINANCEIROS": {"Tipo": "Recebimentos", "Descrição": "Entradas referente a rendimentos de aplicações financeiras CDB."},
-
-        "CONTRIBUIÇÃO - RETIROS": {"Tipo": "Recebimentos", "Descrição": "Entradas referentes às contribuições de retiros."},
-
-        "RIFAS": {"Tipo": "Recebimentos", "Descrição": "Entradas referente às arrecadações realizadas por meio de rifas."},
-
-        "ASSINATURA DE SERVIÇOS DIGITAIS": {"Tipo": "Despesas fixas", "Descrição": "Despesas com a assinatura de serviços digitais, como sistemas de gestão financeira."},
-
-        "CONTABILIDADE": {"Tipo": "Despesas fixas", "Descrição": "Despesas com escritório de contabilidade."},
-
-        "CONTRIBUIÇÃO PARA USO DO ESPAÇO E RECURSOS": {"Tipo": "Despesas fixas", "Descrição": "Essa despesa cobre o uso do espaço e outras comodidades, como internet, água e energia, além de uma contribuição para os gastos com os animais. O valor é repassado ao dirigente, proprietário do chacará onde a SantaLuz está localizada.."},
-
-        "CUSTEIO DE VIAGEM": {"Tipo": "Despesas variáveis", "Descrição": "Ajuda de custos de viagens para transporte de artistas em apresentações na Santaluz, ou para a condução de cerimônias da SantaLuz em outros locais."},
-
-        "APRESENTAÇÃO ARTÍSTICA": {"Tipo": "Despesas variáveis", "Descrição": "Custos associados a apresentações artísticas, incluindo a contratação de músicos para eventos comemorativos."},
-
-        "REPASSE DE CERIMÔNIA DE TERCEIROS": {"Tipo": "Despesas variáveis", "Descrição": "Despesas relacionadas ao repasse de contribuições de cerimônias realizadas na Santaluz por coletivos externos, como indígenas, que serão destinadas a esses grupos.."},
-
-        "AYAHUASCA": {"Tipo": "Despesas variáveis", "Descrição": "Despesa com a aquisição de medicina ayahuasca, o principal insumo para a realização das cerimônias na SantaLuz."},
-
-        "DESPESAS COM RETIRO": {"Tipo": "Despesas variáveis", "Descrição": "Despesas relacionadas diretamente a organização e realização de retiros."},
-
-        "DEVOLUÇÕES (DESISTÊNCIA)": {"Tipo": "Despesas variáveis", "Descrição": "Despesa referente à restituição de contribuições de cerimônias, aplicável quando um frequentador, após contribuir, informa antecipadamente sua impossibilidade de comparecimento."},
-
-        "MANUTENÇÃO DE EQUIPAMENTOS": {"Tipo": "Despesas variáveis", "Descrição": "Despesas relacionadas à manutenção dos equipamentos da SantaLuz."},
-
-        "MANUTENÇÃO DAS INSTALAÇÕES": {"Tipo": "Despesas variáveis", "Descrição": "Despesas relacionadas à manutenção das instalações da SantaLuz."},
-
-        "LENHAS": {"Tipo": "Despesas variáveis", "Descrição": "Despesas relacionadas à aquisição de lenhas para a fogueira."},
-
-        "MATERIAIS DE LIMPEZA": {"Tipo": "Despesas variáveis", "Descrição": "Despesas com materiais de limpeza."},
-
-        "TARIFAS BANCÁRIAS": {"Tipo": "Despesas variáveis", "Descrição": "Despesas com tarifas bancárias e notificações de cobranças."},
-
-        "INSTALAÇÕES": {"Tipo": "Despesas variáveis", "Descrição": "Investimentos realizados na melhoria das instalações."},
-
-        "EQUIPAMENTOS , FERRAMENTAS E UTENSÍLIOS": {"Tipo": "Despesas variáveis", "Descrição": "Custos associados à compra de novos equipamentos, ferramentas e utensílios."},
-
-        "DEMAIS DESPESAS": {"Tipo": "Despesas variáveis", "Descrição": "Outras despesas esporádicas e de baixo valor."},
-
-        "RAPÉ / TABACO": {"Tipo": "Despesas variáveis", "Descrição": "Despesas com medicina do Rapé e Tabaco."},
-
-        "VELAS": {"Tipo": "Despesas variáveis", "Descrição": "Despesas com Velas."},
-
-        "ALIMENTOS E REFEIÇÕES": {"Tipo": "Despesas variáveis", "Descrição": "Despesas com alimentos e refeições referem-se à contrapartida mencionada na categoria de receitas \"Rateio de alimentação\". Neste processo, a SantaLuz efetua o pagamento e, posteriormente, recebe dos frequentadores o valor correspondente à parte devida por cada um."},
-
-        "CHECKLIST": {"Tipo": "Despesas variáveis", "Descrição": "Esta categoria de despesa abrange um checklist de itens adquiridos regularmente para a realização das cerimônias, como saquinhos, papel higiênico,, ervas para tabaco e defumação, incensos, entre outros."}
-
-    }
+    
 
     
 
@@ -672,26 +648,29 @@ if page == "Prestação de Contas Mensal":
     if len(all_cats_period) > 0:
 
         glossario_data = []
-
-        for cat in sorted(all_cats_period):
-
+        for cat in all_cats_period:
             info = GLOSSARIO_INFO.get(cat, {"Tipo": "-", "Descrição": "-"})
-
             glossario_data.append({
-
-                "Nome": cat,
-
                 "Tipo": info["Tipo"],
-
-                "Descrição": info["Descrição"]
-
+                "Categoria": cat,
+                "Descrição": info.get("Descrição", info.get("Descriǜo", "-"))
             })
-
         df_glossario = pd.DataFrame(glossario_data)
+        
+        tipo_order = {"Recebimentos": 1, "Despesas fixas": 2, "Despesas variáveis": 3}
+        df_glossario['Tipo_Order'] = df_glossario['Tipo'].map(tipo_order).fillna(4)
+        
+        df_glossario = df_glossario.sort_values(by=['Tipo_Order', 'Categoria'])
+        df_glossario = df_glossario.drop(columns=['Tipo_Order'])
+        
+        st.table(df_glossario.set_index('Tipo'))
 
-        df_glossario.set_index('Nome', inplace=True)
-
-        st.table(df_glossario)
+                # Print Mode Toggle
+        col_space, col_btn = st.columns([4, 1])
+        with col_btn:
+            if st.button("🖨️ Preparar para Impressão", use_container_width=True):
+                st.session_state['print_mode'] = True
+                st.rerun()
 
     else:
 
@@ -931,22 +910,22 @@ elif page == "Fluxo de Caixa Gerencial":
         
 
         fig.update_layout(
-
             barmode='relative',
-
             xaxis_title='',
-
             yaxis_title='Valores (R$)',
-
             hovermode='x unified',
-
+            dragmode='pan',
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
-
         )
 
         
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, config={
+            'displayModeBar': True,
+            'scrollZoom': False,
+            'modeBarButtonsToRemove': ['zoom2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'select2d', 'lasso2d'],
+            'displaylogo': False
+        })
 
 # Tabela Dinâmica Detalhada
 
@@ -1042,3 +1021,24 @@ elif page == "Fluxo de Caixa Gerencial":
 
         st.markdown(html_table, unsafe_allow_html=True)
 
+
+    st.markdown('<div class="pagebreak"></div>', unsafe_allow_html=True)
+    st.markdown("---")
+    st.subheader("Glossário das Categorias")
+    
+    glossario_data = []
+    for cat, info in GLOSSARIO_INFO.items():
+        glossario_data.append({
+            "Tipo": info["Tipo"],
+            "Categoria": cat,
+            "Descrição": info["Descrição"]
+        })
+    df_glossario_completo = pd.DataFrame(glossario_data)
+    
+    tipo_order = {"Recebimentos": 1, "Despesas fixas": 2, "Despesas variáveis": 3}
+    df_glossario_completo['Tipo_Order'] = df_glossario_completo['Tipo'].map(tipo_order).fillna(4)
+    
+    df_glossario_completo = df_glossario_completo.sort_values(by=['Tipo_Order', 'Categoria'])
+    df_glossario_completo = df_glossario_completo.drop(columns=['Tipo_Order'])
+    
+    st.table(df_glossario_completo.set_index('Tipo'))
