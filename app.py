@@ -518,8 +518,8 @@ if page == "Prestação de Contas Mensal":
             df_rec_grp_pie = df_rec_grp.rename(columns={'category_name': 'Categoria', 'amount': 'Valor'})
             df_rec_grp_pie['Categoria_Quebrada'] = df_rec_grp_pie['Categoria'].apply(lambda x: "<br>".join(textwrap.wrap(x, width=30)))
             fig_rec_print = px.pie(df_rec_grp_pie, values='Valor', names='Categoria_Quebrada', hole=0.4, color_discrete_sequence=px.colors.qualitative.Pastel, template="plotly_white")
-            fig_rec_print.update_traces(textposition='inside', textinfo='percent', domain=dict(x=[0, 0.6], y=[0, 1]))
-            fig_rec_print.update_layout(legend=dict(orientation='v', yanchor='top', y=1, xanchor='left', x=0.65, font=dict(size=14)), margin=dict(t=20, b=20, l=0, r=0), height=450)
+            fig_rec_print.update_traces(textposition='inside', textinfo='percent', domain=dict(x=[0, 0.55], y=[0, 1]))
+            fig_rec_print.update_layout(legend=dict(orientation='v', yanchor='top', y=1, xanchor='left', x=0.60, font=dict(size=18)), margin=dict(t=20, b=20, l=0, r=0), height=500)
             
             html_table += "<div style='overflow-x:auto;'><table style='width:100%; border-collapse: collapse; text-align: left; font-family: sans-serif; color: black;'>"
             html_table += "<thead><tr style='border-bottom: 2px solid #ddd;'><th>Categoria</th><th>Porcentagem</th><th>Valor</th></tr></thead><tbody>"
@@ -540,8 +540,8 @@ if page == "Prestação de Contas Mensal":
             df_desp_grp_pie = df_desp_grp.rename(columns={'category_name': 'Categoria', 'amount': 'Valor'})
             df_desp_grp_pie['Categoria_Quebrada'] = df_desp_grp_pie['Categoria'].apply(lambda x: "<br>".join(textwrap.wrap(x, width=30)))
             fig_desp_print = px.pie(df_desp_grp_pie, values='Valor', names='Categoria_Quebrada', hole=0.4, color_discrete_sequence=px.colors.qualitative.Pastel, template="plotly_white")
-            fig_desp_print.update_traces(textposition='inside', textinfo='percent', domain=dict(x=[0, 0.6], y=[0, 1]))
-            fig_desp_print.update_layout(legend=dict(orientation='v', yanchor='top', y=1, xanchor='left', x=0.65, font=dict(size=14)), margin=dict(t=20, b=20, l=0, r=0), height=450)
+            fig_desp_print.update_traces(textposition='inside', textinfo='percent', domain=dict(x=[0, 0.55], y=[0, 1]))
+            fig_desp_print.update_layout(legend=dict(orientation='v', yanchor='top', y=1, xanchor='left', x=0.60, font=dict(size=18)), margin=dict(t=20, b=20, l=0, r=0), height=500)
             
             html_table_desp += "<div style='overflow-x:auto;'><table style='width:100%; border-collapse: collapse; text-align: left; font-family: sans-serif; color: black;'>"
             html_table_desp += "<thead><tr style='border-bottom: 2px solid #ddd;'><th>Categoria</th><th>Porcentagem</th><th>Valor</th></tr></thead><tbody>"
@@ -557,41 +557,53 @@ if page == "Prestação de Contas Mensal":
             glossario_data = []
             for cat in all_cats_period:
                 info = GLOSSARIO_INFO.get(cat, {"Tipo": "-", "Descrição": "-"})
-                glossario_data.append({"Tipo": info["Tipo"], "Categoria": cat, "Descrição": info.get("Descrição", "-")})
+                glossario_data.append({"Tipo": info["Tipo"], "Categoria": cat, "Descrição": info.get("Descrição", info.get("Descri\u01dco", "-"))})
             df_glossario_print = pd.DataFrame(glossario_data)
             tipo_order = {"Recebimentos": 1, "Despesas fixas": 2, "Despesas variáveis": 3}
             df_glossario_print['Tipo_Order'] = df_glossario_print['Tipo'].map(tipo_order).fillna(4)
             df_glossario_print = df_glossario_print.sort_values(by=['Tipo_Order', 'Categoria']).drop(columns=['Tipo_Order'])
 
         # RENDER PAGE 1
-        st.markdown(f"<h1 style='text-align: center; color: black; font-size: 36px; margin-bottom: 40px;'>Resumo do Mês: {month_mapping[selected_month]} | {selected_year}</h1>", unsafe_allow_html=True)
+        import base64
+        try:
+            with open("logo sta-luz.png", "rb") as f:
+                img_b64 = base64.b64encode(f.read()).decode()
+            img_html = f'<div style="text-align: center; margin-bottom: 20px;"><img src="data:image/png;base64,{img_b64}" width="200"></div>'
+            st.markdown(img_html, unsafe_allow_html=True)
+        except Exception as e:
+            pass
+
+        st.markdown(f"<h1 style='text-align: center; color: black; font-size: 50px; font-weight: bold; margin-bottom: 50px;'>Resumo do Mês: {month_mapping[selected_month]} | {selected_year}</h1>", unsafe_allow_html=True)
+        
+        balanco_color = "#27ae60" if balanco >= 0 else "#e74c3c"
+        
         st.markdown(f"""
-        <div style="font-size: 24px; line-height: 2.5; color: black; padding: 20px;">
-            <div style="border-bottom: 1px solid #eee;"><b>Saldo Anterior:</b> <span style="float: right;">R$ {saldo_anterior:,.2f}</span></div>
-            <div style="border-bottom: 1px solid #eee;"><b>Total Recebimentos:</b> <span style="float: right; color: #27ae60;">R$ {total_receitas:,.2f} <span style="font-size: 16px; color: #555;">({len(df_receitas)} transações)</span></span></div>
-            <div style="border-bottom: 1px solid #eee;"><b>Total Despesas:</b> <span style="float: right; color: #e74c3c;">R$ {-total_despesas:,.2f} <span style="font-size: 16px; color: #555;">({len(df_despesas)} transações)</span></span></div>
-            <div style="border-bottom: 1px solid #eee;"><b>Balanço no Período:</b> <span style="float: right;">R$ {balanco:,.2f}</span></div>
-            <div style="border-bottom: 1px solid #eee; font-size: 28px;"><b>Saldo Final:</b> <span style="float: right; font-weight: bold;">R$ {saldo_final:,.2f}</span></div>
+        <div style="font-size: 32px; line-height: 2.5; color: black; padding: 20px;">
+            <div style="border-bottom: 2px solid #eee;"><b>Saldo Anterior:</b> <span style="float: right; color: black;">R$ {saldo_anterior:,.2f}</span></div>
+            <div style="border-bottom: 2px solid #eee;"><b>Total Recebimentos:</b> <span style="float: right; color: #27ae60;">R$ {total_receitas:,.2f}</span></div>
+            <div style="border-bottom: 2px solid #eee;"><b>Total Despesas:</b> <span style="float: right; color: #e74c3c;">R$ {-total_despesas:,.2f}</span></div>
+            <div style="border-bottom: 2px solid #eee;"><b>Balanço no Período:</b> <span style="float: right; color: {balanco_color};">R$ {balanco:,.2f}</span></div>
+            <div style="border-bottom: 2px solid #eee; font-size: 38px;"><b>Saldo Final:</b> <span style="float: right; font-weight: bold; color: black;">R$ {saldo_final:,.2f}</span></div>
         </div>
         """.replace(",", "X").replace(".", ",").replace("X", "."), unsafe_allow_html=True)
         
         # PAGE 2
         st.markdown('<div class="pagebreak"></div>', unsafe_allow_html=True)
-        st.markdown("<h2 style='text-align: center; color: black; margin-top: 40px;'>Receitas: De Onde Veio o Dinheiro?</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center; color: black; margin-top: 40px; font-size: 40px; font-weight: bold;'>Receitas: De Onde Veio o Dinheiro?</h2>", unsafe_allow_html=True)
         if not df_receitas.empty:
             st.plotly_chart(fig_rec_print, use_container_width=True)
             st.markdown(html_table, unsafe_allow_html=True)
             
         # PAGE 3
         st.markdown('<div class="pagebreak"></div>', unsafe_allow_html=True)
-        st.markdown("<h2 style='text-align: center; color: black; margin-top: 40px;'>Despesas: Para Onde Foi o Dinheiro?</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center; color: black; margin-top: 40px; font-size: 40px; font-weight: bold;'>Despesas: Para Onde Foi o Dinheiro?</h2>", unsafe_allow_html=True)
         if not df_despesas.empty:
             st.plotly_chart(fig_desp_print, use_container_width=True)
             st.markdown(html_table_desp, unsafe_allow_html=True)
             
         # PAGE 4
         st.markdown('<div class="pagebreak"></div>', unsafe_allow_html=True)
-        st.markdown("<h2 style='text-align: center; color: black; margin-top: 40px;'>Glossário das Categorias Utilizadas</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center; color: black; margin-top: 40px; font-size: 40px; font-weight: bold;'>Glossário das Categorias Utilizadas</h2>", unsafe_allow_html=True)
         if len(all_cats_period) > 0:
             st.table(df_glossario_print.set_index('Tipo'))
         
