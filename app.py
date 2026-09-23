@@ -67,6 +67,7 @@ st.markdown('''
     section[data-testid="stSidebar"] { display: none !important; }
     header { display: none !important; }
     .stApp { background-color: white !important; }
+            button { display: none !important; }
     
     .pagebreak { page-break-before: always !important; display: block !important; width: 100% !important; height: 1px !important; margin: 0 !important; padding: 0 !important; border: none !important; }
     iframe { display: none !important; }
@@ -495,6 +496,7 @@ if page == "Prestação de Contas Mensal":
             [data-testid="stSidebar"] { display: none !important; }
             header { display: none !important; }
             .stApp { background-color: white !important; }
+            button { display: none !important; }
             
         </style>""", unsafe_allow_html=True)
         
@@ -504,7 +506,7 @@ if page == "Prestação de Contas Mensal":
                 st.session_state['print_mode'] = False
                 st.rerun()
         with col_print:
-            st.components.v1.html("""<button onclick="try { window.parent.print(); } catch(e) { try { window.top.print(); } catch(e2) { alert('Bloqueio do navegador. Por favor, pressione as teclas Ctrl + P para imprimir!'); } }" style="float: right; background-color:#2ecc71; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold; font-size:16px;">🖨️ Imprimir Agora</button><script>setTimeout(function() { try { window.parent.print(); } catch(e) {} }, 1000);</script>""", height=70)
+            st.components.v1.html("""<button onclick="try { window.parent.print(); } catch(e) { try { window.top.print(); } catch(e2) { alert('Bloqueio do navegador. Por favor, pressione as teclas Ctrl + P para imprimir!'); } }" style="float: right; background-color:#2ecc71; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold; font-size:16px;">🖨️ Imprimir Agora</button><script>setTimeout(function() { try { window.parent.print(); } catch(e) {} }, 2500);</script>""", height=70)
 
         import base64
         try:
@@ -515,7 +517,7 @@ if page == "Prestação de Contas Mensal":
         except Exception as e:
             pass
 
-        st.markdown("<h1 style='text-align: center; color: black; font-size: 40px; font-weight: bold; margin-bottom: 5px;'>📊 Dashboard Financeiro SantaLuz</h1>", unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align: center; color: black; font-size: 28px; font-weight: bold; margin-bottom: 5px;'>📊 Relatório Financeiro SantaLuz</h1>", unsafe_allow_html=True)
         st.markdown("<p style='text-align: center; color: #555; font-size: 18px; margin-bottom: 40px;'>Acompanhamento do fluxo financeiro e prestação de contas.</p>", unsafe_allow_html=True)
 
         import plotly.express as px
@@ -529,17 +531,17 @@ if page == "Prestação de Contas Mensal":
             df_rec_grp['percent'] = (df_rec_grp['amount'] / total_receitas) * 100
             df_rec_grp = df_rec_grp.sort_values(by='amount', ascending=False)
             df_rec_grp_pie = df_rec_grp.rename(columns={'category_name': 'Categoria', 'amount': 'Valor'})
-            df_rec_grp_pie['Categoria_Quebrada'] = df_rec_grp_pie['Categoria'].apply(lambda x: "<br>".join(textwrap.wrap(x, width=30)))
+            df_rec_grp_pie['Categoria_Quebrada'] = df_rec_grp_pie['Categoria'].apply(lambda x: "<br>".join(textwrap.wrap(x, width=35)))
             fig_rec_print = px.pie(df_rec_grp_pie, values='Valor', names='Categoria_Quebrada', hole=0.4, color_discrete_sequence=px.colors.qualitative.Pastel, template="plotly_white")
-            fig_rec_print.update_traces(textposition='inside', textinfo='percent', domain=dict(x=[0, 0.55], y=[0, 1]))
-            fig_rec_print.update_layout(legend=dict(orientation='v', yanchor='top', y=1, xanchor='left', x=0.60, font=dict(size=18)), margin=dict(t=20, b=20, l=0, r=0), height=500)
+            fig_rec_print.update_traces(textposition='inside', textinfo='percent', domain=dict(x=[0, 0.45], y=[0, 1]))
+            fig_rec_print.update_layout(legend=dict(orientation='v', yanchor='top', y=1, xanchor='left', x=0.50, font=dict(size=12)), margin=dict(t=10, b=10, l=0, r=0), height=350, width=700)
             
-            html_table += "<div style='overflow-x:auto;'><table style='width:100%; border-collapse: collapse; text-align: left; font-family: sans-serif; color: black;'>"
-            html_table += "<thead><tr style='border-bottom: 2px solid #ddd;'><th>Categoria</th><th>Porcentagem</th><th>Valor</th></tr></thead><tbody>"
+            html_table += "<div style='overflow-x:auto;'><table style='width:100%; border-collapse: collapse; text-align: left; font-family: sans-serif; color: black; font-size: 11px; line-height: 1.2;'>"
+            html_table += "<thead><tr style='border-bottom: 2px solid #ddd;'><th style='padding: 4px;'>Categoria</th><th style='padding: 4px;'>Porcentagem</th><th style='padding: 4px;'>Valor</th></tr></thead><tbody>"
             for _, row in df_rec_grp.iterrows():
                 val_str = f"R$ {row['amount']:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-                html_table += f"<tr style='border-bottom: 1px solid #ddd;'><td>{row['category_name']}</td><td>{row['percent']:.2f}%</td><td style='white-space: nowrap;'>{val_str}</td></tr>"
-            html_table += f"<tr style='font-weight: bold; border-top: 2px solid #333;'><td>TOTAL RECEITAS</td><td>100.00%</td><td style='white-space: nowrap;'>R$ {total_receitas:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") + "</td></tr>"
+                html_table += f"<tr style='border-bottom: 1px solid #eee;'><td style='padding: 4px;'>{row['category_name']}</td><td style='padding: 4px;'>{row['percent']:.2f}%</td><td style='padding: 4px; white-space: nowrap;'>{val_str}</td></tr>"
+            html_table += f"<tr style='font-weight: bold; border-top: 2px solid #333;'><td style='padding: 4px;'>TOTAL RECEITAS</td><td style='padding: 4px;'>100.00%</td><td style='padding: 4px; white-space: nowrap;'>R$ {total_receitas:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") + "</td></tr>"
             html_table += "</tbody></table></div>"
             
         # Despesas calc
@@ -551,17 +553,17 @@ if page == "Prestação de Contas Mensal":
             df_desp_grp['percent'] = (df_desp_grp['amount'] / total_desp_abs) * 100
             df_desp_grp = df_desp_grp.sort_values(by='amount', ascending=False)
             df_desp_grp_pie = df_desp_grp.rename(columns={'category_name': 'Categoria', 'amount': 'Valor'})
-            df_desp_grp_pie['Categoria_Quebrada'] = df_desp_grp_pie['Categoria'].apply(lambda x: "<br>".join(textwrap.wrap(x, width=30)))
+            df_desp_grp_pie['Categoria_Quebrada'] = df_desp_grp_pie['Categoria'].apply(lambda x: "<br>".join(textwrap.wrap(x, width=35)))
             fig_desp_print = px.pie(df_desp_grp_pie, values='Valor', names='Categoria_Quebrada', hole=0.4, color_discrete_sequence=px.colors.qualitative.Pastel, template="plotly_white")
-            fig_desp_print.update_traces(textposition='inside', textinfo='percent', domain=dict(x=[0, 0.55], y=[0, 1]))
-            fig_desp_print.update_layout(legend=dict(orientation='v', yanchor='top', y=1, xanchor='left', x=0.60, font=dict(size=18)), margin=dict(t=20, b=20, l=0, r=0), height=500)
+            fig_desp_print.update_traces(textposition='inside', textinfo='percent', domain=dict(x=[0, 0.45], y=[0, 1]))
+            fig_desp_print.update_layout(legend=dict(orientation='v', yanchor='top', y=1, xanchor='left', x=0.50, font=dict(size=12)), margin=dict(t=10, b=10, l=0, r=0), height=350, width=700)
             
-            html_table_desp += "<div style='overflow-x:auto;'><table style='width:100%; border-collapse: collapse; text-align: left; font-family: sans-serif; color: black;'>"
-            html_table_desp += "<thead><tr style='border-bottom: 2px solid #ddd;'><th>Categoria</th><th>Porcentagem</th><th>Valor</th></tr></thead><tbody>"
+            html_table_desp += "<div style='overflow-x:auto;'><table style='width:100%; border-collapse: collapse; text-align: left; font-family: sans-serif; color: black; font-size: 11px; line-height: 1.2;'>"
+            html_table_desp += "<thead><tr style='border-bottom: 2px solid #ddd;'><th style='padding: 4px;'>Categoria</th><th style='padding: 4px;'>Porcentagem</th><th style='padding: 4px;'>Valor</th></tr></thead><tbody>"
             for _, row in df_desp_grp.iterrows():
                 val_str = f"R$ {row['amount']:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-                html_table_desp += f"<tr style='border-bottom: 1px solid #ddd;'><td>{row['category_name']}</td><td>{row['percent']:.2f}%</td><td style='white-space: nowrap;'>{val_str}</td></tr>"
-            html_table_desp += f"<tr style='font-weight: bold; border-top: 2px solid #333;'><td>TOTAL DESPESAS</td><td>100.00%</td><td style='white-space: nowrap;'>R$ {total_desp_abs:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") + "</td></tr>"
+                html_table_desp += f"<tr style='border-bottom: 1px solid #eee;'><td style='padding: 4px;'>{row['category_name']}</td><td style='padding: 4px;'>{row['percent']:.2f}%</td><td style='padding: 4px; white-space: nowrap;'>{val_str}</td></tr>"
+            html_table_desp += f"<tr style='font-weight: bold; border-top: 2px solid #333;'><td style='padding: 4px;'>TOTAL DESPESAS</td><td style='padding: 4px;'>100.00%</td><td style='padding: 4px; white-space: nowrap;'>R$ {total_desp_abs:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") + "</td></tr>"
             html_table_desp += "</tbody></table></div>"
 
         # Glossario calc
@@ -579,7 +581,7 @@ if page == "Prestação de Contas Mensal":
         # RENDER PAGE 1
         
 
-        st.markdown(f"<h1 style='text-align: center; color: black; font-size: 50px; font-weight: bold; margin-bottom: 50px;'>Resumo do Mês: {month_mapping[selected_month]} | {selected_year}</h1>", unsafe_allow_html=True)
+        st.markdown(f"<h1 style='text-align: center; color: black; font-size: 38px; font-weight: bold; margin-bottom: 30px;'>Resumo do Mês: {month_mapping[selected_month]} | {selected_year}</h1>", unsafe_allow_html=True)
         
         balanco_color = "#27ae60" if balanco >= 0 else "#e74c3c"
         
@@ -595,23 +597,28 @@ if page == "Prestação de Contas Mensal":
         
         # PAGE 2
         st.markdown('<div class="pagebreak"></div>', unsafe_allow_html=True)
-        st.markdown("<h2 style='text-align: center; color: black; margin-top: 40px; font-size: 40px; font-weight: bold;'>Receitas: De Onde Veio o Dinheiro?</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center; color: black; margin-top: 40px; font-size: 28px; font-weight: bold;'>Receitas: De Onde Veio o Dinheiro?</h2>", unsafe_allow_html=True)
         if not df_receitas.empty:
-            st.plotly_chart(fig_rec_print, use_container_width=True)
+            st.plotly_chart(fig_rec_print, use_container_width=False)
             st.markdown(html_table, unsafe_allow_html=True)
             
         # PAGE 3
         st.markdown('<div class="pagebreak"></div>', unsafe_allow_html=True)
-        st.markdown("<h2 style='text-align: center; color: black; margin-top: 40px; font-size: 40px; font-weight: bold;'>Despesas: Para Onde Foi o Dinheiro?</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center; color: black; margin-top: 40px; font-size: 28px; font-weight: bold;'>Despesas: Para Onde Foi o Dinheiro?</h2>", unsafe_allow_html=True)
         if not df_despesas.empty:
-            st.plotly_chart(fig_desp_print, use_container_width=True)
+            st.plotly_chart(fig_desp_print, use_container_width=False)
             st.markdown(html_table_desp, unsafe_allow_html=True)
             
         # PAGE 4
         st.markdown('<div class="pagebreak"></div>', unsafe_allow_html=True)
-        st.markdown("<h2 style='text-align: center; color: black; margin-top: 40px; font-size: 40px; font-weight: bold;'>Glossário das Categorias Utilizadas</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center; color: black; margin-top: 10px; font-size: 22px; font-weight: bold;'>Glossário das Categorias Utilizadas</h2>", unsafe_allow_html=True)
         if len(all_cats_period) > 0:
-            st.table(df_glossario_print.set_index('Tipo'))
+            gloss_html = "<div style='overflow-x:auto;'><table style='width:100%; border-collapse: collapse; text-align: left; font-family: sans-serif; color: black; font-size: 11px; line-height: 1.2;'>"
+            gloss_html += "<thead><tr style='border-bottom: 2px solid #ddd;'><th style='padding: 4px;'>Tipo</th><th style='padding: 4px;'>Categoria</th><th style='padding: 4px;'>Descrição</th></tr></thead><tbody>"
+            for _, row in df_glossario_print.iterrows():
+                gloss_html += f"<tr style='border-bottom: 1px solid #eee;'><td style='padding: 4px; white-space: nowrap;'>{row['Tipo']}</td><td style='padding: 4px; font-weight: bold;'>{row['Categoria']}</td><td style='padding: 4px;'>{row['Descrição']}</td></tr>"
+            gloss_html += "</tbody></table></div>"
+            st.markdown(gloss_html, unsafe_allow_html=True)
         
         st.stop()
 
