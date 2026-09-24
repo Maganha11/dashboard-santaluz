@@ -297,6 +297,9 @@ if st.sidebar.button("Prestação de Contas Mensal", type="primary" if st.sessio
 if st.sidebar.button("Fluxo de Caixa Gerencial", type="primary" if st.session_state.page == "Fluxo de Caixa Gerencial" else "secondary", use_container_width=True):
     st.session_state.page = "Fluxo de Caixa Gerencial"
     st.rerun()
+if st.sidebar.button("Auditoria", type="primary" if st.session_state.page == "Auditoria" else "secondary", use_container_width=True):
+    st.session_state.page = "Auditoria"
+    st.rerun()
 page = st.session_state.page
 
 st.sidebar.markdown("---")
@@ -426,7 +429,7 @@ if page == "Prestação de Contas Mensal":
 
     st.sidebar.markdown("Dashboard desenvolvido para a comunidade SantaLuz.")
 
-    APP_VERSION = "V1.029"
+    APP_VERSION = "V1.032"
     st.sidebar.markdown(f"<div style='text-align: center; color: #888; font-size: 16px; font-weight: bold; margin-top: 40px;'>{APP_VERSION}</div>", unsafe_allow_html=True)
 
     
@@ -892,7 +895,7 @@ elif page == "Fluxo de Caixa Gerencial":
     
     st.sidebar.markdown("---")
     st.sidebar.markdown("Dashboard desenvolvido para a comunidade SantaLuz.")
-    APP_VERSION = "V1.029"
+    APP_VERSION = "V1.032"
     st.sidebar.markdown(f"<div style='text-align: center; color: #888; font-size: 16px; font-weight: bold; margin-top: 40px;'>{APP_VERSION}</div>", unsafe_allow_html=True)
 
     
@@ -1166,3 +1169,114 @@ elif page == "Fluxo de Caixa Gerencial":
     df_glossario_completo = df_glossario_completo.drop(columns=['Tipo_Order'])
     
     st.table(df_glossario_completo.set_index('Tipo'))
+
+elif page == "Auditoria":
+    st.title("🕵️ Auditoria de Transações")
+    st.markdown("Pesquisa e filtragem avançada do histórico financeiro.")
+    
+    if df_transactions.empty:
+        st.warning("Sem dados suficientes.")
+        st.stop()
+        
+    df_audit = df_transactions.copy()
+    if 'due_date' in df_audit.columns:
+        df_audit['due_date'] = pd.to_datetime(df_audit['due_date']).dt.date
+    else:
+        df_audit['due_date'] = None
+        
+    # --- FILTROS NO TOPO ---
+    col_f1, col_f2, col_f3, col_f4 = st.columns(4)
+    
+    tipos_disponiveis = sorted(df_audit['type_pt'].dropna().unique().tolist())
+    sel_tipos = col_f1.multiselect("Tipo", options=tipos_disponiveis)
+    
+    categorias_disponiveis = sorted(df_audit['category_name'].dropna().unique().tolist())
+    sel_categorias = col_f2.multiselect("Categoria", options=categorias_disponiveis)
+    
+    import datetime
+    min_date = df_audit['due_date'].min() if not df_audit.empty and df_audit['due_date'].notna().any() else datetime.date(2024, 1, 1)
+    max_date = df_audit['due_date'].max() if not df_audit.empty and df_audit['due_date'].notna().any() else datetime.date.today()
+    
+    start_date = col_f3.date_input("Data Inicial", value=min_date, min_value=min_date, max_value=max_date, format="DD/MM/YYYY")
+    end_date = col_f4.date_input("Data Final", value=max_date, min_value=min_date, max_value=max_date, format="DD/MM/YYYY")
+    
+    search_text = st.text_input("🔍 Buscar no Histórico / Descrição", placeholder="Ex: retorno ao rio...")
+    
+    # --- APLICAÇÃO DOS FILTROS ---
+    mask = pd.Series(True, index=df_audit.index)
+    
+    if sel_tipos:
+        mask &= df_audit['type_pt'].isin(sel_tipos)
+        
+    if sel_categorias:
+        mask &= df_audit['category_name'].isin(sel_categorias)
+        
+    if start_date and end_date:
+        mask &= (df_audit['due_date'] >= start_date) & (df_audit['due_date'] <= end_date)
+        
+    if search_text:
+        search_lower = search_text.lower()
+        mask_desc = df_audit['description'].astype(str).str.lower().str.contains(search_lower, na=False)
+        if 'name' in df_audit.columns:
+            mask_name = df_audit['name'].astype(str).str.lower().str.contains(search_lower, na=False)
+            mask &= (mask_desc | mask_name)
+        else:
+            mask &= mask_desc
+            
+    df_filtered = df_audit[mask]
+    
+    # --- PREPARAÇÃO DA TABELA ---
+    display_cols = []
+    col_rename = {}
+    
+    if 'due_date' in df_filtered.columns:
+        display_cols.append('due_date')
+        col_rename['due_date'] = 'Data'
+    if 'type_pt' in df_filtered.columns:
+        display_cols.append('type_pt')
+        col_rename['type_pt'] = 'Tipo'
+    if 'category_name' in df_filtered.columns:
+        display_cols.append('category_name')
+        col_rename['category_name'] = 'Categoria'
+    if 'name' in df_filtered.columns:
+        display_cols.append('name')
+        col_rename['name'] = 'Histórico'
+    if 'amount' in df_filtered.columns:
+        display_cols.append('amount')
+        col_rename['amount'] = 'Valor (R$)'
+        
+    df_show = df_filtered[display_cols].rename(columns=col_rename)
+    
+    st.markdown("### Resultados da Pesquisa")
+    
+    st.dataframe(
+        df_show.sort_values(by="Data", ascending=False) if "Data" in df_show.columns else df_show,
+        use_container_width=True,
+        hide_index=True,
+        column_config={
+            "Data": st.column_config.DateColumn("Data", format="DD/MM/YYYY"),
+            "Valor (R$)": st.column_config.NumberColumn("Valor (R$)", format="R$ %.2f")
+        }
+    )
+    
+    # --- TOTALIZADOR ---
+    total_receitas = df_filtered[df_filtered['type_pt'] == 'Receita']['amount'].sum() if 'type_pt' in df_filtered.columns else 0
+    total_despesas = df_filtered[df_filtered['type_pt'].isin(['Despesa Variável', 'Despesa Fixa'])]['amount'].sum() if 'type_pt' in df_filtered.columns else 0
+    saldo = total_receitas - total_despesas
+    
+    st.markdown("---")
+    st.markdown("### Totalizadores da Pesquisa")
+    col_t1, col_t2, col_t3 = st.columns(3)
+    
+    def format_brl(value):
+        return f"R$ {value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        
+    col_t1.metric("Total de Receitas", format_brl(total_receitas))
+    col_t2.metric("Total de Despesas", format_brl(total_despesas))
+    col_t3.metric("Saldo do Filtro", format_brl(saldo))
+    
+    # --- VERSÃO NO MENU ---
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("Dashboard desenvolvido para a comunidade SantaLuz.")
+    APP_VERSION = "V1.032"
+    st.sidebar.markdown(f"<div style='text-align: center; color: #888; font-size: 16px; font-weight: bold; margin-top: 40px;'>{APP_VERSION}</div>", unsafe_allow_html=True)
