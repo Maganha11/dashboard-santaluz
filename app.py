@@ -139,10 +139,10 @@ def fetch_all_transactions():
 
     all_data = []
     
-    # 1. Carregar histórico salvo (Até 31 de Agosto de 2026) para otimizar velocidade
+    # 1. Carregar histórico salvo (Até 30 de Setembro de 2026) para otimizar velocidade
     try:
         import json
-        with open('historico_santaluz_ate_2026_08.json', 'r', encoding='utf-8') as f:
+        with open('historico_santaluz_ate_2026_09.json', 'r', encoding='utf-8') as f:
             historico = json.load(f)
             all_data.extend(historico)
     except Exception as e:
@@ -150,7 +150,7 @@ def fetch_all_transactions():
 
     # 2. Buscar apenas dados novos a partir de 1º de Julho de 2026
     page = 1
-    progress_text = "Buscando dados recentes da API (A partir de Set/2026)..."
+    progress_text = "Buscando dados recentes da API (A partir de Out/2026)..."
     my_bar = st.progress(0, text=progress_text)
     
     total_pages = 1
@@ -158,7 +158,7 @@ def fetch_all_transactions():
     
     import time
     while page <= total_pages:
-        req = urllib.request.Request(f"{BASE_URL}transactions?per_page=100&page={page}&start_date=2026-09-01", headers={
+        req = urllib.request.Request(f"{BASE_URL}transactions?per_page=100&page={page}&start_date=2026-10-01", headers={
             'Authorization': f'Bearer {TOKEN}',
             'Accept': 'application/json'
         })
@@ -429,7 +429,7 @@ if page == "Prestação de Contas Mensal":
 
     st.sidebar.markdown("Dashboard desenvolvido para a comunidade SantaLuz.")
 
-    APP_VERSION = "V1.032"
+    APP_VERSION = "V1.033"
     st.sidebar.markdown(f"<div style='text-align: center; color: #888; font-size: 16px; font-weight: bold; margin-top: 40px;'>{APP_VERSION}</div>", unsafe_allow_html=True)
 
     
@@ -895,7 +895,7 @@ elif page == "Fluxo de Caixa Gerencial":
     
     st.sidebar.markdown("---")
     st.sidebar.markdown("Dashboard desenvolvido para a comunidade SantaLuz.")
-    APP_VERSION = "V1.032"
+    APP_VERSION = "V1.033"
     st.sidebar.markdown(f"<div style='text-align: center; color: #888; font-size: 16px; font-weight: bold; margin-top: 40px;'>{APP_VERSION}</div>", unsafe_allow_html=True)
 
     
@@ -1278,5 +1278,5 @@ elif page == "Auditoria":
     # --- VERSÃO NO MENU ---
     st.sidebar.markdown("---")
     st.sidebar.markdown("Dashboard desenvolvido para a comunidade SantaLuz.")
-    APP_VERSION = "V1.032"
+    APP_VERSION = "V1.033"
     st.sidebar.markdown(f"<div style='text-align: center; color: #888; font-size: 16px; font-weight: bold; margin-top: 40px;'>{APP_VERSION}</div>", unsafe_allow_html=True)
